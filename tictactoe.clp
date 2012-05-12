@@ -72,7 +72,8 @@
    =>
    (retract ?phase ?choice)
    (assert (player-move ?player))
-   (assert (phase select-pile-size))
+   (modify (BoardSlot (row 3) (column 3) (content "-")) ((content) "X"))
+   
    (PrintBoard())
    (ask-start-again)) ;this is just for testing!!!
 
