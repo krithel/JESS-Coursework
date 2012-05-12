@@ -72,7 +72,6 @@
    =>
    (retract ?phase ?choice)
    (assert (player-move ?player))
-   (assert (phase select-pile-size))
    (PrintBoard())
    (ask-start-again)) ;this is just for testing!!!
 
@@ -83,6 +82,27 @@
    (retract ?phase ?choice)
    (assert (phase choose-player))
    (printout t "Choose c or h." crlf))
+
+(deffunction boardFull()
+	(bind ?row 1)
+	(bind ?col 1)
+	(bind ?full true)
+	?full <- (while (<= ?row 3)
+		
+				(while (<= ?col 3)
+		
+					(bind ?result (run-query* get-contents-of-slot ?col ?row)
+					(if (?result "-" content)
+						(?full false)
+					)
+				)
+			  )
+	?full <-
+	=>
+	(printout t "It's a draw" crlf)
+					
+)			
+
 
 (reset)
 
