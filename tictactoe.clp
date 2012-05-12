@@ -58,9 +58,9 @@
 (defrule player-select
    (phase choose-player)
    =>
-   (printout t "Who moves first (Computer: c "
-               "Human: h)? ")
+   (printout t "Do you want to be O or X?" crlf)
    (assert (player-select (read))))
+   (facts)
 
 (defrule good-player-choice
    ?phase <- (phase choose-player)
@@ -105,3 +105,4 @@
 (reset)
 
 (run)
+(facts)
