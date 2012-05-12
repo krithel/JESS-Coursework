@@ -14,10 +14,23 @@
 	(BoardSlot (row 3) (column 2) (content "-"))
 	(BoardSlot (row 3) (column 3) (content "-")))
 
-(defrule SlotIsEmpty
-	(BoardSlot {content == "-"})
-	=>
-	(printout t "The board slot is empty" crlf))
+(defrule RowIsFull
+	?slot1 <- (BoardSlot {content != "-"})
+	?slot2 <- (BoardSlot {row == slot1.row &&column != slot1.column && content == slot1.content})
+	?slot3 <- (BoardSlot {row == slot2.row && column != slot1.column && column != slot2.column && content == slot2.content})
+	=>(printout t "The player: " ?slot1.content " has won!" crlf))
+	
+(defrule ColIsFull
+	?slot1 <- (BoardSlot {content != "-"})
+	?slot2 <- (BoardSlot {column == slot1.column && row != slot1.row && content == slot1.content})
+	?slot3 <- (BoardSlot {column == slot2.column && row != slot1.row && row != slot2.row && content == slot2.content})
+	=>(printout t "The player: " ?slot1.content " has won!" crlf))
+
+(defrule DiagIsFull
+	?slot1 <- (BoardSlot {row == 1 && content != "-"})
+	?slot2 <- (BoardSlot {row == 2 && column == 2 && content == slot1.content})
+	?slot3 <- (BoardSlot {row == 3 && column != slot1.column && column != slot2.column && content == slot1.content})
+	=>(printout t "The player: " ?slot1.content " has won!" crlf))
 
 (defquery get-contents-of-slot
 	(declare (variables ?col ?row))
@@ -44,7 +57,10 @@
 	)
 )
 
-
+(defrule pickaslot
+	(declare (salience 100))
+	?slot <- (BoardSlot {row == 1 && column == 1})
+	=> (bind ?slot.content "X"))
 
 
 
