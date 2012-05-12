@@ -19,6 +19,10 @@
 	=>
 	(printout t "The board slot is empty" crlf))
 
+(defrule RowIsFull
+	?slot1 <- (BoardSlot)
+	?slot2 <- (BoardSlot {row == slot1.row && 
+
 (defquery get-contents-of-slot
 	(declare (variables ?col ?row))
 	(BoardSlot (row ?row) (column ?col) (content ?content)))
