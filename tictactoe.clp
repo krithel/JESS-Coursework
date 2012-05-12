@@ -44,5 +44,46 @@
 	)
 )
 
+
+
+
+
+
+(deffacts initial-phase
+   (phase choose-player))
+
+
+
+(deffunction ask-start-again ()
+  (printout t "Play again? (y/n) ")
+  (if (eq (read) y) then
+    (assert (phase choose-player))))
+
+(defrule player-select
+   (phase choose-player)
+   =>
+   (printout t "Who moves first (Computer: c "
+               "Human: h)? ")
+   (assert (player-select (read))))
+
+(defrule good-player-choice
+   ?phase <- (phase choose-player)
+   ?choice <- (player-select ?player&:(or (eq ?player c) (eq ?player h)))
+   =>
+   (retract ?phase ?choice)
+   (assert (player-move ?player))
+   (assert (phase select-pile-size))
+   (PrintBoard())
+   (ask-start-again)) ;this is just for testing!!!
+
+(defrule bad-player-choice 
+   ?phase <- (phase choose-player)
+   ?choice <- (player-select ?player&~c&~h)
+   =>
+   (retract ?phase ?choice)
+   (assert (phase choose-player))
+   (printout t "Choose c or h." crlf))
+
 (reset)
-(PrintBoard())
+
+(run)
