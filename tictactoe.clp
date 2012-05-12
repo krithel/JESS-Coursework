@@ -68,9 +68,8 @@
    =>
    (retract ?phase ?choice)
    (assert (player-move ?player))
-   (assert (phase select-pile-size))
-   (PrintBoard())
-   (ask-start-again)) ;this is just for testing!!!
+   
+   )
 
 (defrule bad-player-choice 
    ?phase <- (phase choose-player)
@@ -101,6 +100,25 @@
 (defquery get-contents-of-slot
 	(declare (variables ?col ?row))
 	(BoardSlot (row ?row) (column ?col) (content ?content)))
+
+(defrule get-human-move
+   (player-move h)
+   =>
+   (printout t "Which column would you like to select?")
+   (assert (human-col (read)))
+   (printout t "Which row would you like to select?")
+   (assert (human-row (read))))
+
+(defrule good-human-move
+   ?col <- (human-col ?choice)
+   ?row <- (human-row ?choice)
+   ?slot <- (BoardSlot {row == ?row && column == ?col && content == "-"})
+   =>
+   (printout t "good-human-move")
+   (retract ?move ?whose-turn)
+   (bind ?slot.content "X"))
+   (PrintBoard())
+   (assert (player-move c))
 
 (reset)
 
