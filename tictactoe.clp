@@ -84,6 +84,92 @@
    (printout t "Choose X or O." crlf))
 
 
+;=================AI Turn==========================
+
+;(defrule AIRule1
+; 	;A square that gives you three in a row
+;	(declare (salience 7))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+;(defrule AIRule2
+; 	;A square that would give your opponent three in a row
+;	(declare (salience 6))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+;(defrule AIRule3
+; 	;A square that is a double row for you
+;	(declare (salience 5))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+;(defrule AIRule4
+; 	;A square that would be a double row for your opponent
+;	(declare (salience 4))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+;(defrule AIRule5
+; 	;A center square
+;	(declare (salience 3))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+;(defrule AIRule6
+;	;A corner square
+;	(declare (salience 2))
+;	?state <- (State {player == AI})
+;	=>
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
+(defrule AIRule7
+ 	;Any square
+	(declare (salience 1))
+	?state <- (State {player == AI})
+	?square <- (BoardSlot {content == "-"})
+	=>
+	(bind ?square.content ?state.mark)
+	(if (= ?state.mark O) then
+	 	(modify ?state (player Player) (mark X))
+		else
+		(modify ?state (player Player) (mark O)))
+)
 ;=================Player Turn======================
 (defrule get-human-move
 	?player <- (State {player == Player})
@@ -106,13 +192,12 @@
 	?slot <- (BoardSlot (content ?cont &: (eq ?cont "-"))
 					{row == coord.row && column == coord.col})
 	=>
-	(printout t "good-human-move" crlf)
 	(bind ?slot.content ?state.mark)
 	(retract ?coord)
 	(if (= ?state.mark O) then
-	 	(modify ?state (mark X))
+	 	(modify ?state (player AI) (mark X))
 		else
-		(modify ?state (mark O)))
+		(modify ?state (player AI) (mark O)))
 	)
 
 (defrule bad-human-move
@@ -148,14 +233,14 @@
 
 ;====================Victory Condition Checkers=======================
 (defrule board-is-full
- 	(declare (salience 1))
+ 	(declare (salience 10))
  	(not (BoardSlot (content ?c &:(eq ?c "-"))))
 	?state <- (State)
 	=>
 	(modify ?state (player Draw)))
 
 (defrule RowIsFull
- 	(declare (salience 2))
+ 	(declare (salience 11))
 	?slot1 <- (BoardSlot {content != "-"})
 	?slot2 <- (BoardSlot {row == slot1.row &&column != slot1.column && content == slot1.content})
 	?slot3 <- (BoardSlot {row == slot2.row && column != slot1.column && column != slot2.column && content == slot2.content})
@@ -164,7 +249,7 @@
 	(modify ?state (player Winner) (mark ?slot1.content)))
 	
 (defrule ColIsFull
- 	(declare (salience 2))
+ 	(declare (salience 11))
 	?slot1 <- (BoardSlot {content != "-"})
 	?slot2 <- (BoardSlot {column == slot1.column && row != slot1.row && content == slot1.content})
 	?slot3 <- (BoardSlot {column == slot2.column && row != slot1.row && row != slot2.row && content == slot2.content})
@@ -173,7 +258,7 @@
 	(modify ?state (player Winner) (mark ?slot1.content)))
 
 (defrule DiagIsFull
- 	(declare (salience 2))
+ 	(declare (salience 11))
 	?slot1 <- (BoardSlot {row == 1 && column != 2 && content != "-"})
 	?slot2 <- (BoardSlot {row == 2 && column == 2 && content == slot1.content})
 	?slot3 <- (BoardSlot {row == 3 && column != slot1.column && column != slot2.column && content == slot1.content})
