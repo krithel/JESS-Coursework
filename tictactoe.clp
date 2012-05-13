@@ -196,24 +196,32 @@
 	?square <- (BoardSlot {content == "-"})
 	(test (in-a-row ?slot1 ?slot2 ?square))
 	=>
-	(bind ?square.content ?state.mark)
+	(bind ?square.content ?state.mark)		 	
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
 		else
 		(modify ?state (player Player) (mark O))))
 
-;(defrule AIRule2
+(defrule AIRule2
 ; 	;The AI will try and choose a square that would give it's opponent 3 in a row
-;	(declare (salience 6))
-;	?state <- (State {player == AI})
-;	?square <- (BoardSlot {content == "-"})
-;	=>
-;	(bind ?square.content ?state.mark)
-;	(if (= ?state.mark O) then
-;	 	(modify ?state (player Player) (mark X))
-;		else
-;		(modify ?state (player Player) (mark O)))
-;)
+	;RULE AIRule2
+	;IF
+	;	There are 2 Spaces filled with the Player Mark and a free space in a row
+	;THEN
+	;	The AI will play in the free space.	
+	(declare (salience 6))
+	?state <- (State {player == AI})
+	?slot1 <- (BoardSlot {content != state.mark && content != "-"})
+	?slot2 <- (BoardSlot {content != state.mark && content != "-" && (row != slot1.row || column != slot1.column)})
+	?square <- (BoardSlot {content == "-"})
+	(test (in-a-row ?slot1 ?slot2 ?square))
+	=>
+	(bind ?square.content ?state.mark)
+	(if (= ?state.mark O) then
+	 	(modify ?state (player Player) (mark X))
+		else
+		(modify ?state (player Player) (mark O)))
+)
 
 (defrule AIRule3
  	;The AI will try and choose a square that would give then a 'Double row'
@@ -240,18 +248,22 @@
 		(modify ?state (player Player) (mark O)))
 )
 
-;(defrule AIRule4
+(defrule AIRule4
 ;	;The AI will try and choose a square that would give the opponent a 'Double row'
-;	(declare (salience 4))
-;	?state <- (State {player == AI})
-;	?square <- (BoardSlot {content == "-"})
-;	=>
-;	(bind ?square.content ?state.mark)
-;	(if (= ?state.mark O) then
-;	 	(modify ?state (player Player) (mark X))
-;		else
-;		(modify ?state (player Player) (mark O)))
-;)
+	(declare (salience 4))
+	?state <- (State {player == AI})
+	?slot11 <- (BoardSlot {content != state.mark && content != "-"})
+	?slot12 <- (BoardSlot {content == "-"})
+	?slot21 <- (BoardSlot {content != state.mark && content != "-" && (row != slot11.row || column != slot11.column)})
+	?slot22 <- (BoardSlot {content == "-" && (row != slot12.row || column != slot12.column)})
+	?square <- (BoardSlot {content == "-"})
+	=>
+	(bind ?square.content ?state.mark)
+	(if (= ?state.mark O) then
+	 	(modify ?state (player Player) (mark X))
+		else
+		(modify ?state (player Player) (mark O)))
+)
 
 (defrule AIRule5
  	;The AI will try and choose the centre square
