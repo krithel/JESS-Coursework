@@ -35,8 +35,10 @@
 	;This function is used to print out the board on each turn.
 	(bind ?row 1)
 	(bind ?col 1)
+	(printout t "    1   2   3" crlf)
+	(printout t "   ------------" crlf)
 	(while (<= ?row 3)
-	
+		(printout t ?row " | ")
 		(while (<= ?col 3)
 		
 			(bind ?result (run-query* get-contents-of-slot ?col ?row))
@@ -46,7 +48,7 @@
 			(bind ?col (+ ?col 1))
 		)
 		(printout t crlf)
-		(printout t "------------" crlf)
+		(printout t "   ------------" crlf)
 		(bind ?col 1)
 		(bind ?row (+ ?row 1))
 	)
@@ -73,12 +75,12 @@
 				else (if 
 						(and 
 						 	(or 
-							 	(and (eq ?slot1.diag ?slot2.diag) (not (eq ?slot1.diag "None")))
-								(and (eq ?slot2.diag ?slot3.diag) (not (eq ?slot2.diag "None")))
-								(and (eq ?slot1.diag ?slot3.diag) (not (eq ?slot1.diag "None")))) 
+							 	(and (eq ?slot1.diag ?slot2.diag) (eq ?slot2.diag "Both") (not (eq ?slot1.diag "None")))
+								(and (eq ?slot2.diag ?slot3.diag) (eq ?slot2.diag "Both") (not (eq ?slot2.diag "None")))
+								(and (eq ?slot1.diag ?slot3.diag) (eq ?slot2.diag "Both") (not (eq ?slot1.diag "None")))) 
 							(notequals ?slot1.row ?slot2.row ?slot3.row) 
 							(notequals ?slot1.column ?slot2.column ?slot3.column))
-						then(return TRUE) else (return FALSE)))))
+						then (return TRUE) else (return FALSE)))))
 
 
 (deffunction ask-start-again ()
@@ -104,7 +106,6 @@
 	=>
 	(PrintBoard)
 	(printout t "The winner is " ?state.mark "!" crlf)
-	(printout t "Congratulations!" crlf)
 	(retract ?state)
 	(ask-start-again)
 	)
@@ -134,7 +135,6 @@
 	(test (in-a-row ?slot1 ?slot2 ?slot3))
 	?state <- (State)
 	=>
-	(printout t "Test1" crlf)
 	(modify ?state (player Winner) (mark ?slot1.content)))
 
 (defrule board-is-full
@@ -196,7 +196,6 @@
 	?square <- (BoardSlot {content == "-"})
 	(test (in-a-row ?slot1 ?slot2 ?square))
 	=>
-	(printout t "Test1" crlf)
 	(bind ?square.content ?state.mark)
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
@@ -234,7 +233,6 @@
 	(test (in-a-row ?slot11 ?slot12 ?square))
 	(test (in-a-row ?slot21 ?slot22 ?square))
 	=>
-	(printout t "Test2" crlf)
 	(bind ?square.content ?state.mark)
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
@@ -266,7 +264,6 @@
 	?state <- (State {player == AI})
 	?square <- (BoardSlot {content == "-" && tag == "Centre"})
 	=>
-	(printout t "Test3" crlf)
 	(bind ?square.content ?state.mark)
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
@@ -285,7 +282,6 @@
 	?state <- (State {player == AI})
 	?square <- (BoardSlot {content == "-" && tag == "Corner"})
 	=>
-	(printout t "Test4" crlf)
 	(bind ?square.content ?state.mark)
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
@@ -304,7 +300,6 @@
 	?state <- (State {player == AI})
 	?square <- (BoardSlot {content == "-"})
 	=>
-	(printout t "Test5" crlf)
 	(bind ?square.content ?state.mark)
 	(if (= ?state.mark O) then
 	 	(modify ?state (player Player) (mark X))
