@@ -100,6 +100,26 @@
 (defquery get-contents-of-slot
 	(declare (variables ?col ?row))
 	(BoardSlot (row ?row) (column ?col) (content ?content)))
+	
+(deffunction boardFull()
+	(bind ?row 1)
+	(bind ?col 1)
+	(bind ?full true)
+	?full <- (while (<= ?row 3)
+		
+				(while (<= ?col 3)
+		
+					(bind ?result (run-query* get-contents-of-slot ?col ?row)
+					(if (?result "-" content)
+						(?full false)
+					)
+				)
+			  )
+	?full <-
+	=>
+	(printout t "It's a draw" crlf)
+					
+)		
 
 (defrule get-human-move
    (player-move h)
