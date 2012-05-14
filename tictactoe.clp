@@ -250,6 +250,27 @@
 )
 
 
+
+;(defrule AIRule4corner
+;	;TASK 3: A small change to ensure that our AI will always reach a draw at worst. Same as rule 4 but prioritises corners.
+;	(declare (salience 5))
+;	?state <- (State {player == AI})
+;	?slot11 <- (BoardSlot {content != state.mark && content != "-"})
+;	?slot12 <- (BoardSlot {content == "-"})
+;	?slot21 <- (BoardSlot {content != state.mark && content != "-" && (row != slot11.row || column != slot11.column)})
+;	?slot22 <- (BoardSlot {content == "-" && (row != slot12.row || column != slot12.column)})
+;	?square <- (BoardSlot {content == "-" && tag == "Corner"})
+;	(test (in-a-row ?slot11 ?slot12 ?square))
+;	(test (in-a-row ?slot21 ?slot22 ?square))
+;	=>
+;	(printout t "Test4" crlf)
+;	(bind ?square.content ?state.mark)
+;	(if (= ?state.mark O) then
+;	 	(modify ?state (player Player) (mark X))
+;		else
+;		(modify ?state (player Player) (mark O)))
+;)
+
 (defrule AIRule4
 ;	;The AI will try and choose a square that would give the opponent a 'Double row'
 	(declare (salience 4))
